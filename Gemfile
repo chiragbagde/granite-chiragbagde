@@ -3,8 +3,10 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
+# dependencies
 ruby "3.0.2"
 gem "bcrypt", "~> 3.1.13"
+gem "simplecov", require: false, group: :test
 
 # adding react-rails
 gem "react-rails"
