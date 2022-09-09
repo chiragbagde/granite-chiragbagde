@@ -4,6 +4,13 @@ json.task do
     :slug,
     :title
 
+  json.comments @comments do |comment|
+    json.extract! comment,
+      :id,
+      :content,
+      :created_at
+  end
+
   json.assigned_user do
     json.extract! @task.assigned_user,
       :id,
