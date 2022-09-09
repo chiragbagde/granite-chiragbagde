@@ -1,26 +1,20 @@
 # frozen_string_literal: true
 
 class Task < ApplicationRecord
+  RESTRICTED_ATTRIBUTES = %i[title task_owner_id assigned_user_id]
+  enum progress: { pending: "pending", completed: "completed" }
   has_many :comments, dependent: :destroy
-
   belongs_to :task_owner, foreign_key: "task_owner_id", class_name: "User"
   belongs_to :assigned_user, foreign_key: "assigned_user_id", class_name: "User"
 
-  validates :title, presence: true, length: { maximum: 50 }
+  MAX_TITLE_LENGTH = 125
+  validates :title, presence: true, length: { maximum: MAX_TITLE_LENGTH }
   validates :slug, uniqueness: true
   validate :slug_not_changed
 
   before_create :set_slug
-  # before_validation :set_title
-  # # after_validation :set_title
-
-  # before_save :change_title
 
   private
-
-    def set_title
-      self.title = "Pay electricity bill"
-    end
 
     def set_slug
       title_slug = title.parameterize
@@ -39,16 +33,9 @@ class Task < ApplicationRecord
       self.slug = slug_candidate
     end
 
-    # We make use of column_name_changed? attribute method provided by ActiveModel::Dirty module.
-    # In every controller, we can use t() method without including any additional modules since AbstractController::Translation is already included in ActionController::Base.
-
     def slug_not_changed
       if slug_changed? && self.persisted?
         errors.add(:slug, t("task.slug.immutable"))
       end
-    end
-
-    def change_title
-      self.title = "Pay your dues amit"
     end
 end
