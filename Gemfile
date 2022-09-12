@@ -4,6 +4,12 @@ source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # dependencies
+# For periodic sidekiq jobs
+gem "sidekiq-cron"
+
+# For opening mails in development env
+gem "letter_opener", group: :development
+
 gem "sidekiq"
 ruby "3.0.2"
 gem "bcrypt", "~> 3.1.13"
