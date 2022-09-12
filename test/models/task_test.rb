@@ -33,26 +33,9 @@ class TaskTest < ActiveSupport::TestCase
   end
 
   def test_task_count_increases_on_saving
-    assert_difference ["Task.count"], 1 do
+    assert_difference ["Task.count"] do
       create(:task)
     end
-  end
-
-  def test_task_count_decreases_on_deleting
-    assert_difference ["Task.count"], -1 do
-      delete(:task)
-    end
-  end
-
-  def test_task_should_not_be_valid_without_title
-    @task.title = ""
-    assert_not @task.valid?
-  end
-
-  def test_task_slug_is_parameterized_title
-    title = @task.title
-    @task.save!
-    assert_equal title.parameterize, @task.slug
   end
 
   def test_task_should_not_be_valid_without_title
@@ -147,5 +130,11 @@ class TaskTest < ActiveSupport::TestCase
     new_task = Task.create!(title: substring_of_existing_slug, assigned_user: @user, task_owner: @user)
 
     assert_equal substring_of_existing_slug.parameterize, new_task.slug
+  end
+
+  def test_creates_multiple_tasks_with_unique_slug
+    tasks = create_list(:task, 10, assigned_user: @user, task_owner: @user)
+    slugs = tasks.pluck(:slug)
+    assert_equal slugs.uniq, slugs
   end
 end
